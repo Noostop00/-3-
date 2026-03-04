@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>𝑩𝑬𝑵𝑻 𝑾𝑨𝑳3𝑨 ✿ Pinterest Downloader</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(145deg, #fbc7d1 0%, #f8e1e7 50%, #ffe9f0 100%);
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 500px;
+            width: 100%;
+            margin: 0 auto;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* البطاقة الرئيسية */
+        .main-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 40px;
+            padding: 25px 20px;
+            box-shadow: 0 20px 40px rgba(255, 150, 180, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.9);
+        }
+
+        /* الهيدر */
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .name-title {
+            font-size: 2.2em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ff8a9f, #ffb3c6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 5px;
+            letter-spacing: 1px;
+        }
+
+        .subtitle {
+            font-size: 1em;
+            color: #a65e7a;
+            background: rgba(255, 255, 255, 0.6);
+            padding: 8px 20px;
+            border-radius: 30px;
+            display: inline-block;
+        }
+
+        /* منطقة الإدخال */
+        .input-area {
+            background: white;
+            border-radius: 30px;
+            padding: 5px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(255, 200, 210, 0.5);
+            display: flex;
+            gap: 5px;
+        }
+
+        .input-area input {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            background: transparent;
+            font-size: 14px;
+            color: #4a2e38;
+            direction: ltr;
+            width: 100%;
+        }
+
+        .input-area input:focus {
+            outline: none;
+        }
+
+        .extract-btn {
+            background: linear-gradient(145deg, #ff8a9f, #ffb3c6);
+            border: none;
+            padding: 0 25px;
+            border-radius: 30px;
+            color: white;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            white-space: nowrap;
+            -webkit-appearance: none;
+        }
+
+        /* Proxy buttons */
+        .proxy-section {
+            background: rgba(255, 240, 245, 0.6);
+            border-radius: 30px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .proxy-buttons {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .proxy-btn {
+            flex: 1;
+            min-width: 70px;
+            padding: 12px 5px;
+            border: 1px solid #ffd0da;
+            border-radius: 25px;
+            background: white;
+            color: #b26b84;
+            font-weight: 500;
+            font-size: 13px;
+            cursor: pointer;
+            -webkit-appearance: none;
+        }
+
+        .proxy-btn.active {
+            background: linear-gradient(145deg, #ffb3c6, #ffc2d1);
+            color: #8f4f65;
+            border-color: #ff8a9f;
+        }
+
+        /* منطقة النتيجة */
+        .result-area {
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 30px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+
+        .video-link-box {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .video-link-box input {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #ffd9e2;
+            border-radius: 20px;
+            background: white;
+            direction: ltr;
+            font-size: 13px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .download-btn, .copy-btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            -webkit-appearance: none;
+        }
+
+        .download-btn {
+            background: linear-gradient(145deg, #22c55e, #16a34a);
+            color: white;
+        }
+
+        .copy-btn {
+            background: white;
+            color: #b84c6c;
+            border: 1px solid #ffb3c6;
+        }
+
+        /* معاينة الفيديو - متوافقة مع iPhone */
+        .video-preview {
+            margin-top: 20px;
+            border-radius: 20px;
+            overflow: hidden;
+            background: #000;
+            display: none;
+        }
+
+        .video-preview video {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* رسائل الحالة */
+        .status-message {
+            padding: 15px;
+            border-radius: 20px;
+            margin: 10px 0;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .status-loading {
+            background: rgba(255, 240, 245, 0.9);
+            color: #b84c6c;
+        }
+
+        .status-error {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .status-success {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        /* سجل البحث */
+        .history-item {
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 20px;
+            margin-bottom: 5px;
+            font-size: 12px;
+            direction: ltr;
+            text-align: left;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #ac7085;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="main-card">
+            <!-- الهيدر -->
+            <div class="header">
+                <h1 class="name-title">𝑩𝑬𝑵𝑻 𝑾𝑨𝑳3𝑨</h1>
+                <div class="subtitle">✿ لفتات جميلة جداً ✿</div>
+            </div>
+
+            <!-- الإدخال -->
+            <div class="input-area">
+                <input type="url" id="pinUrl" placeholder="رابط Pinterest..." value="https://pin.it/2L68ptjzs" dir="ltr">
+                <button class="extract-btn" id="extractBtn">🔍 استخراج</button>
+            </div>
+
+            <!-- Proxy -->
+            <div class="proxy-section">
+                <div class="proxy-buttons" id="proxySelector">
+                    <button class="proxy-btn active" data-proxy="allorigins">🔄 1</button>
+                    <button class="proxy-btn" data-proxy="corsproxy">🌐 2</button>
+                    <button class="proxy-btn" data-proxy="thingproxy">⚡ 3</button>
+                    <button class="proxy-btn" data-proxy="corsbypass">🚀 4</button>
+                </div>
+            </div>
+
+            <!-- النتيجة -->
+            <div class="result-area" id="resultArea">
+                <!-- حالة التحميل -->
+                <div id="loading" class="status-message status-loading" style="display: none;">
+                    ⏳ جاري البحث عن الفيديو...
+                </div>
+
+                <!-- رسالة الخطأ -->
+                <div id="errorMessage" class="status-message status-error" style="display: none;"></div>
+
+                <!-- رسالة النجاح -->
+                <div id="successMessage" class="status-message status-success" style="display: none;">
+                    ✅ تم العثور على الفيديو!
+                </div>
+
+                <!-- لا يوجد فيديو -->
+                <div id="noVideoMessage" style="text-align: center; color: #ac7085; padding: 15px;">
+                    🎀 أدخلي رابط Pinterest
+                </div>
+
+                <!-- نتيجة الفيديو -->
+                <div id="videoResult" style="display: none;">
+                    <div class="video-link-box">
+                        <input type="text" id="videoLink" readonly dir="ltr" value="">
+                        <div class="action-buttons">
+                            <a href="#" id="downloadBtn" class="download-btn" target="_blank" rel="noopener noreferrer">⬇️ تحميل</a>
+                            <button id="copyBtn" class="copy-btn">📋 نسخ</button>
+                        </div>
+                    </div>
+
+                    <!-- معاينة الفيديو - مهمة لـ iPhone -->
+                    <div class="video-preview" id="videoPreviewContainer">
+                        <video id="videoPreview" controls playsinline webkit-playsinline>
+                            <source src="" type="video/mp4">
+                        </video>
+                    </div>
+                </div>
+            </div>
+
+            <!-- سجل البحث -->
+            <div style="margin-top: 15px;">
+                <div style="color: #ac7085; margin-bottom: 8px;">📋 آخر الروابط:</div>
+                <div id="historyList"></div>
+            </div>
+
+            <!-- تذييل -->
+            <div class="footer">
+                <p>💗 𝑩𝑬𝑵𝑻 𝑾𝑨𝑳3𝑨 💗</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // بروكسيات متعددة
+        const PROXIES = {
+            allorigins: 'https://api.allorigins.win/raw?url=',
+            corsproxy: 'https://corsproxy.io/?',
+            thingproxy: 'https://thingproxy.freeboard.io/fetch/',
+            corsbypass: 'https://cors-bypass.herokuapp.com/?url='
+        };
+
+        let currentProxy = 'allorigins';
+        let currentVideoUrl = '';
+        let searchHistory = [];
+
+        // تحميل السجل
+        try {
+            const saved = localStorage.getItem('bentWal3a_history');
+            if (saved) searchHistory = JSON.parse(saved);
+        } catch (e) {}
+
+        // عناصر الصفحة
+        const elements = {
+            pinUrl: document.getElementById('pinUrl'),
+            extractBtn: document.getElementById('extractBtn'),
+            loading: document.getElementById('loading'),
+            errorMessage: document.getElementById('errorMessage'),
+            noVideoMessage: document.getElementById('noVideoMessage'),
+            videoResult: document.getElementById('videoResult'),
+            successMessage: document.getElementById('successMessage'),
+            videoLink: document.getElementById('videoLink'),
+            downloadBtn: document.getElementById('downloadBtn'),
+            copyBtn: document.getElementById('copyBtn'),
+            videoPreview: document.getElementById('videoPreview'),
+            videoPreviewContainer: document.getElementById('videoPreviewContainer'),
+            historyList: document.getElementById('historyList'),
+            proxyBtns: document.querySelectorAll('.proxy-btn')
+        };
+
+        // تهيئة
+        function init() {
+            elements.extractBtn.addEventListener('click', extractVideo);
+            elements.copyBtn.addEventListener('click', copyVideoLink);
+            
+            elements.proxyBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    elements.proxyBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    currentProxy = this.dataset.proxy;
+                });
+            });
+            
+            updateHistory();
+        }
+
+        // استخراج الفيديو - متوافق مع iPhone
+        async function extractVideo() {
+            const pinUrl = elements.pinUrl.value.trim();
+            
+            if (!pinUrl) {
+                showError('الرجاء إدخال رابط Pinterest');
+                return;
+            }
+
+            hideAllResults();
+            showLoading(true);
+            addToHistory(pinUrl);
+
+            // قائمة البروكسيات
+            const proxyList = Object.keys(PROXIES);
+            
+            for (let proxy of proxyList) {
+                try {
+                    const proxyUrl = PROXIES[proxy];
+                    
+                    // استخدام fetch مع timeout
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 10000);
+                    
+                    const response = await fetch(proxyUrl + encodeURIComponent(pinUrl), {
+                        signal: controller.signal,
+                        headers: {
+                            'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X) AppleWebKit/605.1.15'
+                        }
+                    });
+                    
+                    clearTimeout(timeoutId);
+                    
+                    if (!response.ok) continue;
+                    
+                    const html = await response.text();
+                    
+                    // البحث عن روابط الفيديو
+                    const videoUrls = extractVideoUrls(html);
+                    
+                    if (videoUrls.length > 0) {
+                        currentVideoUrl = videoUrls[0];
+                        
+                        // تحديث الواجهة
+                        elements.videoLink.value = currentVideoUrl;
+                        elements.downloadBtn.href = currentVideoUrl;
+                        
+                        // معاينة الفيديو - متوافقة مع iPhone
+                        elements.videoPreview.src = currentVideoUrl;
+                        elements.videoPreviewContainer.style.display = 'block';
+                        
+                        // إظهار النتائج
+                        showLoading(false);
+                        elements.successMessage.style.display = 'block';
+                        elements.videoResult.style.display = 'block';
+                        elements.noVideoMessage.style.display = 'none';
+                        
+                        return;
+                    }
+                    
+                } catch (e) {
+                    console.log('Proxy failed:', proxy);
+                }
+            }
+            
+            showLoading(false);
+            showError('لم نتمكن من العثور على فيديو في هذا الرابط');
+        }
+
+        // استخراج روابط الفيديو
+        function extractVideoUrls(html) {
+            const urls = [];
+            
+            // البحث عن MP4
+            const mp4Matches = html.match(/https?:\/\/[^"'\s<>]+\.mp4/g) || [];
+            mp4Matches.forEach(url => {
+                if (!urls.includes(url)) urls.push(url);
+            });
+            
+            // البحث في meta tags
+            const metaMatches = html.match(/<meta[^>]+property="og:video"[^>]+content="([^"]+)"/g) || [];
+            metaMatches.forEach(match => {
+                const url = match.match(/content="([^"]+)"/)?.[1];
+                if (url && !urls.includes(url)) urls.push(url);
+            });
+            
+            return urls;
+        }
+
+        // نسخ الرابط - متوافق مع iPhone
+        function copyVideoLink() {
+            if (!currentVideoUrl) return;
+            
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(currentVideoUrl).then(() => {
+                    const original = elements.copyBtn.textContent;
+                    elements.copyBtn.textContent = '✅ تم!';
+                    setTimeout(() => {
+                        elements.copyBtn.textContent = original;
+                    }, 2000);
+                });
+            } else {
+                // طريقة بديلة لـ iPhone
+                const textarea = document.createElement('textarea');
+                textarea.value = currentVideoUrl;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                
+                const original = elements.copyBtn.textContent;
+                elements.copyBtn.textContent = '✅ تم!';
+                setTimeout(() => {
+                    elements.copyBtn.textContent = original;
+                }, 2000);
+            }
+        }
+
+        // إضافة للسجل
+        function addToHistory(url) {
+            searchHistory = [url, ...searchHistory.filter(u => u !== url)].slice(0, 5);
+            try {
+                localStorage.setItem('bentWal3a_history', JSON.stringify(searchHistory));
+            } catch (e) {}
+            updateHistory();
+        }
+
+        function updateHistory() {
+            if (!elements.historyList) return;
+            
+            if (searchHistory.length === 0) {
+                elements.historyList.innerHTML = '';
+                return;
+            }
+            
+            elements.historyList.innerHTML = searchHistory.map(url => `
+                <div class="history-item" onclick="useHistoryUrl('${url.replace(/'/g, "\\'")}')">
+                    ${url}
+                </div>
+            `).join('');
+        }
+
+        window.useHistoryUrl = function(url) {
+            elements.pinUrl.value = url;
+            extractVideo();
+        };
+
+        function hideAllResults() {
+            elements.loading.style.display = 'none';
+            elements.errorMessage.style.display = 'none';
+            elements.successMessage.style.display = 'none';
+            elements.videoResult.style.display = 'none';
+            elements.noVideoMessage.style.display = 'block';
+            elements.videoPreviewContainer.style.display = 'none';
+        }
+
+        function showLoading(show) {
+            elements.loading.style.display = show ? 'block' : 'none';
+            elements.noVideoMessage.style.display = show ? 'none' : 'block';
+            elements.extractBtn.disabled = show;
+        }
+
+        function showError(message) {
+            elements.errorMessage.style.display = 'block';
+            elements.errorMessage.textContent = message;
+        }
+
+        init();
+    </script>
+</body>
+</html>
